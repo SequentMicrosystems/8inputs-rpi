@@ -1,0 +1,32 @@
+{
+  "name": "node-red-contrib-sm-8inputs",
+  "version": "1.0.1",
+  "bundleDependencies": false,
+  "dependencies": {
+    "i2c-bus": "^5.2.0"
+  },
+  "deprecated": false,
+  "description": "A Node-RED node to control Sequent Microsystems 4Relays-4Inputs Card",
+  "main": "8inputs.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sequent Microsystems",
+  "license": "MIT",
+  "node-red" : {
+    "nodes": {
+        "8inputs": "8inputs.js"
+      }
+  },
+   "repository": {
+    "type": "git",
+    "url": "https://github.com/SequentMicrosystems/8inputs-rpi/tree/master/node-red-contrib-sm-8inputs"
+  },
+  "keywords": [
+    "node-red",
+    "node-red-contrib",
+    "i2c",
+    "optically-coupled-input",
+    "Rapberry-Pi"
+  ]
+}

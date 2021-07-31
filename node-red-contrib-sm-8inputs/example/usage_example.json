@@ -1,0 +1,273 @@
+[
+    {
+        "id": "8053da30.9f5288",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "c77514e2.cac378",
+        "type": "ui_switch",
+        "z": "8053da30.9f5288",
+        "name": "",
+        "label": "Turn Relay",
+        "tooltip": "",
+        "group": "96b947ff.55f348",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "topic",
+        "topicType": "msg",
+        "style": "",
+        "onvalue": "true",
+        "onvalueType": "bool",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "false",
+        "offvalueType": "bool",
+        "officon": "",
+        "offcolor": "",
+        "animate": false,
+        "x": 310,
+        "y": 100,
+        "wires": [
+            [
+                "b6129a12.719678"
+            ]
+        ]
+    },
+    {
+        "id": "46ddfbc9.6ef484",
+        "type": "4relind",
+        "z": "8053da30.9f5288",
+        "name": "",
+        "stack": "0",
+        "relay": "0",
+        "payload": "payload",
+        "payloadType": "msg",
+        "x": 510,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "75a143b1.68e99c",
+        "type": "ui_numeric",
+        "z": "8053da30.9f5288",
+        "name": "",
+        "label": "Set all relays",
+        "tooltip": "",
+        "group": "96b947ff.55f348",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "wrap": false,
+        "passthru": true,
+        "topic": "topic",
+        "topicType": "msg",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "15",
+        "step": 1,
+        "x": 330,
+        "y": 260,
+        "wires": [
+            [
+                "46ddfbc9.6ef484"
+            ]
+        ]
+    },
+    {
+        "id": "90dfa9cc.2eb878",
+        "type": "4relindin",
+        "z": "8053da30.9f5288",
+        "name": "",
+        "stack": "0",
+        "channel": "0",
+        "payload": "payload",
+        "payloadType": "msg",
+        "x": 480,
+        "y": 500,
+        "wires": [
+            [
+                "48ba2f70.ceab2"
+            ]
+        ]
+    },
+    {
+        "id": "495340a6.216ee",
+        "type": "inject",
+        "z": "8053da30.9f5288",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "1",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 290,
+        "y": 500,
+        "wires": [
+            [
+                "90dfa9cc.2eb878",
+                "87871947.994138",
+                "201da511.9c0e5a"
+            ]
+        ]
+    },
+    {
+        "id": "48ba2f70.ceab2",
+        "type": "ui_numeric",
+        "z": "8053da30.9f5288",
+        "name": "",
+        "label": "All inputs",
+        "tooltip": "",
+        "group": "96b947ff.55f348",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "wrap": false,
+        "passthru": true,
+        "topic": "topic",
+        "topicType": "msg",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "15",
+        "step": 1,
+        "x": 680,
+        "y": 500,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "87871947.994138",
+        "type": "4relindin",
+        "z": "8053da30.9f5288",
+        "name": "",
+        "stack": "0",
+        "channel": "1",
+        "payload": "payload",
+        "payloadType": "msg",
+        "x": 480,
+        "y": 600,
+        "wires": [
+            [
+                "5619eb97.30c044"
+            ]
+        ]
+    },
+    {
+        "id": "5619eb97.30c044",
+        "type": "ui_numeric",
+        "z": "8053da30.9f5288",
+        "name": "",
+        "label": "input channel 1",
+        "tooltip": "",
+        "group": "96b947ff.55f348",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "wrap": false,
+        "passthru": true,
+        "topic": "topic",
+        "topicType": "msg",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "15",
+        "step": 1,
+        "x": 680,
+        "y": 600,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b6129a12.719678",
+        "type": "4relind",
+        "z": "8053da30.9f5288",
+        "name": "",
+        "stack": "0",
+        "relay": "1",
+        "payload": "payload",
+        "payloadType": "msg",
+        "x": 530,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "201da511.9c0e5a",
+        "type": "4relindrd",
+        "z": "8053da30.9f5288",
+        "name": "",
+        "stack": "0",
+        "relay": "0",
+        "payload": "payload",
+        "payloadType": "msg",
+        "x": 510,
+        "y": 380,
+        "wires": [
+            [
+                "50d610f2.8cfc6"
+            ]
+        ]
+    },
+    {
+        "id": "50d610f2.8cfc6",
+        "type": "ui_numeric",
+        "z": "8053da30.9f5288",
+        "name": "",
+        "label": "Read all relays",
+        "tooltip": "",
+        "group": "96b947ff.55f348",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "wrap": false,
+        "passthru": true,
+        "topic": "topic",
+        "topicType": "msg",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "15",
+        "step": 1,
+        "x": 700,
+        "y": 380,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "96b947ff.55f348",
+        "type": "ui_group",
+        "name": "RELAYS",
+        "tab": "eeb5dec3.85fdd",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "eeb5dec3.85fdd",
+        "type": "ui_tab",
+        "name": "Tab 1",
+        "icon": "dashboard",
+        "order": 1
+    }
+]
