@@ -4,7 +4,7 @@
 
 This is the node-red node to control Sequent Microsystems [Eight Universal Inputs 8-Layer Stackable HAT for Raspberry Pi](https://sequentmicrosystems.com/collections/all-io-cards/products/eight-universal-inputs-br-8-layer-stackable-card-br-for-raspberry-pi-1).
 
-## Install
+## Manual Install
 
 Clone or update the repository, follow the instrutions fron the [first page.](https://github.com/SequentMicrosystems/8inputs-rpi)
 
