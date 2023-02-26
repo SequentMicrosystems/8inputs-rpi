@@ -1,4 +1,4 @@
-[![8inputs-rpi](../readmeres/sequent.jpg)](https://sequentmicrosystems.com)
+[![8inputs-rpi](../../readmeres/sequent.jpg)](https://sequentmicrosystems.com)
 
 # lib8inputs
 
