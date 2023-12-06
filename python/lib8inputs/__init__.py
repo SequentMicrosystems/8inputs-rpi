@@ -1,6 +1,6 @@
-import smbus
+import smbus2
 
-# bus = smbus.SMBus(1)    # 0 = /dev/i2c-0 (port I2C0), 1 = /dev/i2c-1 (port I2C1)
+# bus = smbus2.SMBus(1)    # 0 = /dev/i2c-0 (port I2C0), 1 = /dev/i2c-1 (port I2C1)
 
 DEVICE_ADDRESS = 0x20  # 7 bit address (will be left shifted to add the read write bit)
 
@@ -48,7 +48,7 @@ def get_opto(stack, channel):
         raise ValueError('Invalid opto channel number')
     if channel > 8:
         raise ValueError('Invalid opto channel number')
-    bus = smbus.SMBus(1)
+    bus = smbus2.SMBus(1)
     try:
         val = __check(bus, DEVICE_ADDRESS + stack)
         bus.close()
@@ -65,7 +65,7 @@ def get_opto(stack, channel):
 def get_opto_all(stack):
     if stack < 0 or stack > 7:
         raise ValueError('Invalid stack level')
-    bus = smbus.SMBus(1)
+    bus = smbus2.SMBus(1)
     stack = 0x07 ^ stack
     try:
         val = __check(bus, DEVICE_ADDRESS + stack)
