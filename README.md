@@ -3,7 +3,7 @@
 # 8inputs-rpi
 
 
-This is the command to control [Eight Universal Inputs 8-Layer Stackable HAT for Raspberry Pi](https://sequentmicrosystems.com/collections/all-io-cards/products/eight-universal-inputs-br-8-layer-stackable-card-br-for-raspberry-pi-1)
+This is the command to control [Eight Universal Inputs 8-Layer Stackable HAT for Raspberry Pi](https://sequentmicrosystems.com/products/eight-hv-digital-inputs-for-raspberry-pi)
 
 Don't forget to enable I2C communication, instructions [here](https://www.raspberrypi-spy.co.uk/2014/11/enabling-the-i2c-interface-on-the-raspberry-pi/)
 
