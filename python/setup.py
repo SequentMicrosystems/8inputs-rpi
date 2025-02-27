@@ -2,25 +2,25 @@
 
 # For testing
 #twine upload --repostitory testpypi dist/*
-#pip install --index-url https://test.pypi.org/simple/ --no-deps multiio
+#pip install --index-url https://test.pypi.org/simple/ --no-deps SM8inputs
 
 # For release
 #twine upload dist/*
-#pip install multiio
+#pip install SM8inputs
 
 
-#with open("README.md", 'r') as f:
-#    long_description = f.read()
+with open("README.md", 'r') as f:
+    long_description = f.read()
 
 from setuptools import setup, find_packages
 setup(
-    name='SM8inputs',
+    name='sm8inputs',
     packages=find_packages(),
-    version='1.0.1',
+    version='1.0.2',
     license='MIT',
     description='Library to control 8inputs Automation Card',
-    #long_description=long_description,
-    #long_description_content_type="text/markdown",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     author='Sequent Microsystems',
     author_email='olcitu@gmail.com',
     url='https://sequentmicrosystems.com',
