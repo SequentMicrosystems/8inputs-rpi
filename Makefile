@@ -35,7 +35,7 @@ install: 8inputs
 	$Q echo "[Install]"
 	$Q cp 8inputs		$(DESTDIR)$(PREFIX)/bin
 ifneq ($(WIRINGPI_SUID),0)
-	$Q chown root.root	$(DESTDIR)$(PREFIX)/bin/8inputs
+	$Q chown root:root	$(DESTDIR)$(PREFIX)/bin/8inputs
 	$Q chmod 4755		$(DESTDIR)$(PREFIX)/bin/8inputs
 endif
 #	$Q mkdir -p		$(DESTDIR)$(PREFIX)/man/man1
