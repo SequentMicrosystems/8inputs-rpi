@@ -17,7 +17,7 @@
 #include "comm.h"
 
 #define VERSION_BASE	(int)1
-#define VERSION_MAJOR	(int)0
+#define VERSION_MAJOR	(int)1
 #define VERSION_MINOR	(int)0
 
 #define UNUSED(X) (void)X      /* To avoid gcc/g++ warnings */
@@ -103,7 +103,28 @@ const CliCmdType CMD_IN_READ =
 	"\tUsage:       8inputs <id> read\n",
 	"\tExample:     8inputs 0 read 2; Read Status of Input #2 on Board #0\n"};
 
+static int doHiSpeedSet(int argc, char *argv[]);
+const CliCmdType CMD_IN_SPEED_SET =
+{
+	"spdwr",
+	2,
+	&doHiSpeedSet,
+	"\tspdwr:      Set input speed for individual channel 0 = low speed; 1 = high speed\n",
+	"\tUsage:       8inputs <id> spdwr <channel> <value>\n",
+	"",
+	"\tExample:     8inputs 0 spdwr 2 0; Set Low Speed of Input #2 on Board #0\n"};
 
+static int doHiSpeedGet(int argc, char *argv[]);
+const CliCmdType CMD_IN_SPEED_GET =
+{
+	"spdrd",
+	2,
+	&doHiSpeedGet,
+	"\tspdrd:      Get input speed for individual channel 0 = low speed; 1 = high speed\n",
+	"\tUsage:       8inputs <id> spdrd <channel>\n",
+	"",
+	"\tExample:     8inputs 0 spdrd 2; Get Speed of Input #2 on Board #0\n",
+	};
 
 char *warranty =
 	"	       Copyright (c) 2016-2020 Sequent Microsystems\n"
@@ -325,6 +346,104 @@ static int doInRead(int argc, char *argv[])
 	return OK;
 }
 
+static int doHiSpeedSet(int argc, char *argv[])
+{
+	int dev = 0;
+	int channel = 0;
+	int speed = 0;
+
+	if (argc != 5)
+	{
+		return ARG_CNT_ERR;
+	}
+
+	dev = doBoardInit(atoi(argv[1]));
+	if (dev <= 0)
+	{
+		return ERROR;
+	}
+
+	channel = atoi(argv[3]);
+	speed = atoi(argv[4]);
+
+	if ( (channel < CHANNEL_NR_MIN) || (channel > IN_CH_NR_MAX))
+	{
+		printf("Input channel number value out of range!\n");
+		return ARG_ERR;
+	}
+
+	if (speed < 0 || speed > 1)
+	{
+		printf("Invalid speed value! Use 0 for low speed and 1 for high speed.\n");
+		return ARG_ERR;
+	}
+	uint8_t buff[1];
+	buff[0] = (uint8_t)(channel); // 
+	// Set the speed for the specified channel
+	if(speed == 1)
+	{
+
+		if(OK != i2cMem8Write(dev, I2C_MEM_HS_ENABLE, buff, 1)) // High speed enable
+		{
+			printf("Fail to set high speed!\n");
+			return ERROR;
+		}
+	}
+	else
+	{
+		if(OK != i2cMem8Write(dev, I2C_MEM_HS_DISABLE, buff, 1)) // High speed disable
+		{
+			printf("Fail to set low speed!\n");
+			return ERROR;
+		}
+	}
+	return OK;
+
+}
+
+static int doHiSpeedGet(int argc, char *argv[])
+{
+	int dev = 0;
+	int channel = 0;
+	uint8_t buff[1];
+
+	if (argc != 4)
+	{
+		return ARG_CNT_ERR;
+	}
+
+	dev = doBoardInit(atoi(argv[1]));
+	if (dev <= 0)
+	{
+		return ERROR;
+	}
+
+	channel = atoi(argv[3]);
+
+	if ( (channel < CHANNEL_NR_MIN) || (channel > IN_CH_NR_MAX))
+	{
+		printf("Input channel number value out of range!\n");
+		return ARG_ERR;
+	}
+
+	// Get the speed for the specified channel
+	if(OK != i2cMem8Read(dev, I2C_MEM_HS_MODE_VAL, buff, 1)) // High speed enable
+	{
+		printf("Fail to get speed!\n");
+		return ERROR;
+	}
+	if(buff[0] & (1 << (channel - 1)))
+	{
+		printf("1\n"); // High speed
+	}
+	else
+	{
+		printf("0\n"); // Low speed
+	}
+	return OK;
+
+}
+
 int doHelp(int argc, char *argv[])
 {
 	int i = 0;
@@ -437,6 +556,8 @@ const CliCmdType *gCmdArray[] =
 	&CMD_WAR,
 	&CMD_LIST,
 	&CMD_IN_READ,
+	&CMD_IN_SPEED_SET,
+	&CMD_IN_SPEED_GET,
 	NULL
 };
 
