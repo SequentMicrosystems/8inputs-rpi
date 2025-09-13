@@ -14,6 +14,7 @@
 #include <string.h>
 
 #include "inputs.h"
+#include "data.h"
 #include "comm.h"
 
 #define VERSION_BASE	(int)1
@@ -55,39 +56,15 @@ const int inChRemap[IN_CH_NR_MAX] =
     6,
     7};
 
-extern CliCmdType* gCmdArray[];
-
-const CliCmdType CMD_HELP =
-{
-    "-h",
-    1,
-    &doHelp,
-    "  -h              Display the list of command options or one command option details\n",
-    "  Usage:          "PROGRAM_NAME" -h    Display command options list\n",
-    "  Usage:          "PROGRAM_NAME" -h <param>   Display help for <param> command option\n",
-    "  Example:        "PROGRAM_NAME" -h write    Display help for \"write\" command option\n"
-};
-
-const CliCmdType CMD_VERSION =
-{
-    "-v",
-    1,
-    &doVersion,
-    "  -v              Display the version number\n",
-    "  Usage:          "PROGRAM_NAME" -v\n",
-    "",
-    "  Example:        "PROGRAM_NAME" -v  Display the version number\n"
-};
-
 const CliCmdType CMD_WAR =
 {
     "-warranty",
     1,
     &doWarranty,
-    "  -warranty       Display the warranty\n",
-    "  Usage:          "PROGRAM_NAME" -warranty\n",
+    "  -warranty        Display the warranty\n",
+    "  Usage:           "PROGRAM_NAME" -warranty\n"
     "",
-    "  Example:        "PROGRAM_NAME" -warranty  Display the warranty text\n"
+    "  Example:         "PROGRAM_NAME" -warranty  Display the warranty text\n"
 };
 
 const CliCmdType CMD_IN_READ =
@@ -95,10 +72,10 @@ const CliCmdType CMD_IN_READ =
     "read",
     2,
     &doInRead,
-    "  read            Read inputs status\n",
-    "  Usage:          "PROGRAM_NAME" <id> read <channel>\n",
-    "  Usage:          "PROGRAM_NAME" <id> read\n",
-    "  Example:        "PROGRAM_NAME" 0 read 2; Read Status of Input #2 on Board #0\n"
+    "  read             Read inputs status\n",
+    "  Usage:           "PROGRAM_NAME" <id> read <channel>\n"
+    "  Usage:           "PROGRAM_NAME" <id> read\n",
+    "  Example:         "PROGRAM_NAME" 0 read 2; Read Status of Input #2 on Board #0\n"
 };
 
 const CliCmdType CMD_IN_SPEED_SET =
@@ -106,10 +83,10 @@ const CliCmdType CMD_IN_SPEED_SET =
     "spdwr",
     2,
     &doHiSpeedSet,
-    "  spdwr           Set input speed for individual channel 0 = low speed; 1 = high speed\n",
-    "  Usage:          "PROGRAM_NAME" <id> spdwr <channel> <value>\n",
+    "  spdwr            Set input speed for individual channel 0 = low speed; 1 = high speed\n",
+    "  Usage:           "PROGRAM_NAME" <id> spdwr <channel> <value>\n"
     "",
-    "  Example:        "PROGRAM_NAME" 0 spdwr 2 0; Set Low Speed of Input #2 on Board #0\n"
+    "  Example:         "PROGRAM_NAME" 0 spdwr 2 0; Set Low Speed of Input #2 on Board #0\n"
 };
 
 const CliCmdType CMD_IN_SPEED_GET =
@@ -117,10 +94,10 @@ const CliCmdType CMD_IN_SPEED_GET =
     "spdrd",
     2,
     &doHiSpeedGet,
-    "  spdrd           Get input speed for individual channel 0 = low speed; 1 = high speed\n",
-    "  Usage:          "PROGRAM_NAME" <id> spdrd <channel>\n",
+    "  spdrd            Get input speed for individual channel 0 = low speed; 1 = high speed\n",
+    "  Usage:           "PROGRAM_NAME" <id> spdrd <channel>\n"
     "",
-    "  Example:        "PROGRAM_NAME" 0 spdrd 2; Get Speed of Input #2 on Board #0\n"
+    "  Example:         "PROGRAM_NAME" 0 spdrd 2; Get Speed of Input #2 on Board #0\n"
 };
 
 char *warranty =
@@ -139,29 +116,6 @@ char *warranty =
         "		You should have received a copy of the GNU Lesser General Public License\n"
         "		along with this program. If not, see <http://www.gnu.org/licenses/>.";
 
-void usage(void)
-{
-    int i = 0;
-    while (gCmdArray[i] != NULL)
-    {
-        if (gCmdArray[i]->name != NULL)
-        {
-            if (strlen(gCmdArray[i]->usage1) > 2)
-            {
-                printf("%s", gCmdArray[i]->usage1);
-            }
-            if (strlen(gCmdArray[i]->usage2) > 2)
-            {
-                printf("%s", gCmdArray[i]->usage2);
-            }
-        }
-        i++;
-    }
-    printf("Where: <id> = Board level id = 0..7\n");
-    printf("Type 8inputs -h <command> for more help\n");
-}
-
-
 u8 IOToIn(u8 io)
 {
     u8 i;
@@ -178,7 +132,7 @@ u8 IOToIn(u8 io)
 
 
 
-int inChGet(int dev, u8 channel, OutStateEnumType* state)
+int inChGet(int dev, u8 channel, State* state)
 {
     u8 buff[2];
 
@@ -225,66 +179,8 @@ int inGet(int dev, int* val)
     return OK;
 }
 
-int doBoardInit(int stack)
-{
-    int dev = 0;
-    int add = 0;
-    uint8_t buff[8];
-
-    if ( (stack < 0) || (stack > 7))
-    {
-        printf("Invalid stack level [0..7]!");
-        return ERROR;
-    }
-    add = (stack + RELAY8_HW_I2C_BASE_ADD) ^ 0x07;
-    dev = i2cSetup(add);
-    if (dev == -1)
-    {
-        return ERROR;
-    }
-    if (ERROR == i2cMem8Read(dev, RELAY8_CFG_REG_ADD, buff, 1))
-    {
-        printf("4-RELAY_PLUS card id %d not detected\n", stack);
-        return ERROR;
-    }
-//	if (buff[0] != 0x0f) //non initialized I/O Expander
-//	{
-//		// make 4 I/O pins input and 4 output
-//		buff[0] = 0x0f;
-//		if (0 > i2cMem8Write(dev, RELAY8_CFG_REG_ADD, buff, 1))
-//		{
-//			return ERROR;
-//		}
-//		// put all pins in 0-logic state
-//		buff[0] = 0;
-//		if (0 > i2cMem8Write(dev, RELAY8_OUTPORT_REG_ADD, buff, 1))
-//		{
-//			return ERROR;
-//		}
-//	}
-
-    return dev;
-}
 
 
-
-int boardCheck(int hwAdd)
-{
-    int dev = 0;
-    uint8_t buff[8];
-
-    hwAdd ^= 0x07;
-    dev = i2cSetup(hwAdd);
-    if (dev == -1)
-    {
-        return FAIL;
-    }
-    if (ERROR == i2cMem8Read(dev, RELAY8_CFG_REG_ADD, buff, 1))
-    {
-        return ERROR;
-    }
-    return OK;
-}
 
 /*
  * doInRead:
@@ -296,7 +192,7 @@ int doInRead(int argc, char *argv[])
     int pin = 0;
     int val = 0;
     int dev = 0;
-    OutStateEnumType state = STATE_COUNT;
+    State state = STATE_COUNT;
 
     dev = doBoardInit(atoi(argv[1]));
     if (dev <= 0)
@@ -310,7 +206,7 @@ int doInRead(int argc, char *argv[])
         if ( (pin < CHANNEL_NR_MIN) || (pin > IN_CH_NR_MAX))
         {
             printf("Input channel number value out of range!\n");
-            return ARG_ERR;
+            return ARG_RANGE_ERROR;
         }
 
         if (OK != inChGet(dev, pin, &state))
@@ -366,13 +262,13 @@ int doHiSpeedSet(int argc, char *argv[])
     if ( (channel < CHANNEL_NR_MIN) || (channel > IN_CH_NR_MAX))
     {
         printf("Input channel number value out of range!\n");
-        return ARG_ERR;
+        return ARG_RANGE_ERROR;
     }
 
     if (speed < 0 || speed > 1)
     {
         printf("Invalid speed value! Use 0 for low speed and 1 for high speed.\n");
-        return ARG_ERR;
+        return ARG_RANGE_ERROR;
     }
     uint8_t buff[1];
     buff[0] = (uint8_t)(channel); // 
@@ -420,7 +316,7 @@ int doHiSpeedGet(int argc, char *argv[])
     if ( (channel < CHANNEL_NR_MIN) || (channel > IN_CH_NR_MAX))
     {
         printf("Input channel number value out of range!\n");
-        return ARG_ERR;
+        return ARG_RANGE_ERROR;
     }
 
     // Get the speed for the specified channel
@@ -447,41 +343,4 @@ int doWarranty(int argc, char* argv[])
     UNUSED(argv);
     printf("%s\n", warranty);
     return OK;
-}
-
-int main(int argc, char *argv[])
-{
-    int i = 0;
-    int ret = OK;
-
-    if (argc == 1)
-    {
-        usage();
-        return -1;
-    }
-    while (NULL != gCmdArray[i])
-    {
-        if ( (gCmdArray[i]->name != NULL) && (gCmdArray[i]->namePos < argc))
-        {
-            if (strcasecmp(argv[gCmdArray[i]->namePos], gCmdArray[i]->name) == 0)
-            {
-                ret = gCmdArray[i]->pFunc(argc, argv);
-                if (ret == ARG_CNT_ERR)
-                {
-                    printf("Invalid parameters number!\n");
-                    printf("%s", gCmdArray[i]->usage1);
-                    if (strlen(gCmdArray[i]->usage2) > 2)
-                    {
-                        printf("%s", gCmdArray[i]->usage2);
-                    }
-                }
-                return ret;
-            }
-        }
-        i++;
-    }
-    printf("Invalid command option\n");
-    usage();
-
-    return -1;
 }

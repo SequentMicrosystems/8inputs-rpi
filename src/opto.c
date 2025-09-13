@@ -74,6 +74,10 @@ int optoGet(int dev, int *val)
 	return OK ;
 }
 
+/*
+Modified to only care about enabled or not,
+not the rising/falling edge
+*/
 int optoEdgeGet(int dev, uint8_t ch, uint8_t *val)
 {
 	if (NULL == val)
@@ -85,21 +89,16 @@ int optoEdgeGet(int dev, uint8_t ch, uint8_t *val)
 		printf("Invalid opto ch nr!\n");
 		return ERROR ;
 	}
-	uint8_t buf[2];
-	if (OK != i2cMem8Read(dev, I2C_MEM_OPTO_IT_RISING_ADD, buf, 2))
+	uint8_t buf[1];
+	if (OK != i2cMem8Read(dev, I2C_MEM_OPTO_EDGE_ADD, buf, 1))
 	{
 		return ERROR ;
 	}
-	uint8_t rising = buf[0];
-	uint8_t falling = buf[1];
+	uint8_t edge = buf[0];
 	*val = 0;
-	if (rising & (1 << (ch - 1)))
+	if (edge & (1 << (ch - 1)))
 	{
 		*val |= 1 << 0;
-	}
-	if (falling & (1 << (ch - 1)))
-	{
-		*val |= 1 << 1;
 	}
 	return OK ;
 }
@@ -110,33 +109,23 @@ int optoEdgeSet(int dev, uint8_t ch, uint8_t val)
 	{
 		return ERROR ;
 	}
-	uint8_t buf[2];
-	if (OK != i2cMem8Read(dev, I2C_MEM_OPTO_IT_RISING_ADD, buf, 2))
+	uint8_t buf[1];
+	if (OK != i2cMem8Read(dev, I2C_MEM_OPTO_EDGE_ADD, buf, 1))
 	{
 		return ERROR ;
 	}
-	uint8_t rising = buf[0];
-	uint8_t falling = buf[1];
+	uint8_t edge = buf[0];
 	uint32_t mask = 1 << (ch - 1);
 	if (val & 1 << 0)
 	{ //check rising
-		rising |= mask;
+		edge |= mask;
 	}
 	else
 	{
-		rising &= ~mask;
+		edge &= ~mask;
 	}
-	if (val & 1 << 1)
-	{ //check falling
-		falling |= mask;
-	}
-	else
-	{
-		falling &= ~mask;
-	}
-	buf[0] = rising;
-	buf[1] = falling;
-	if (OK != i2cMem8Write(dev, I2C_MEM_OPTO_IT_RISING_ADD, buf, 2))
+	buf[0] = edge;
+	if (OK != i2cMem8Write(dev, I2C_MEM_OPTO_EDGE_ADD, buf, 1))
 	{
 		return ERROR ;
 	}
@@ -371,7 +360,7 @@ const CliCmdType CMD_OPTO_EDGE_READ =
 	"optedgerd",
 	2,
 	&doOptoEdgeRead,
-	"  optedgerd        Read optocoupled counting edges 0 - none; 1 - rising; 2 - falling; 3 - both\n",
+	"  optedgerd        Read optocoupled counting edges 0 - disabled; 1 - enabled",
 	"  Usage:           "PROGRAM_NAME" <id> optedgerd <channel>\n",
 	"  Example:         "PROGRAM_NAME" 0 optedgerd 2; Read counting edges of optocoupled channel #2 on Board #0\n"
 };
@@ -406,10 +395,10 @@ const CliCmdType CMD_OPTO_EDGE_WRITE =
 	"optedgewr",
 	2,
 	&doOptoEdgeWrite,
-	"  optedgewr        Set optocoupled channel counting edges  0- count disable;\n"
-	"                   1-count rising edges; 2 - count falling edges; 3 - count both edges\n",
+	"  optedgewr        Set optocoupled channel counting edges  0- count disabled;\n"
+	"                   1-count enabled",
 	"  Usage:           "PROGRAM_NAME" <id> optedgewr <channel> <edges> \n",
-	"  Example:         "PROGRAM_NAME" 0 optedgewr 2 1; Set Optocoupled channel #2 on Board #0 to count rising edges\n"
+	"  Example:         "PROGRAM_NAME" 0 optedgewr 2 1; Set Optocoupled channel #2 on Board #0 to count pulses\n"
 };
 int doOptoEdgeWrite(int argc, char *argv[])
 {
@@ -428,34 +417,13 @@ int doOptoEdgeWrite(int argc, char *argv[])
 		return ARG_RANGE_ERROR;
 	}
 	uint8_t state = 0;
-	if (strcasecmp(argv[4], "none") == 0)
-	{
-		state = 0;
-	}
-	else if (strcasecmp(argv[4], "up") == 0
-		|| strcasecmp(argv[4], "rising") == 0)
-	{
-		state = 1;
-	}
-	else if (strcasecmp(argv[4], "down") == 0
-		|| strcasecmp(argv[4], "falling") == 0)
-	{
-		state = 2;
-	}
-	else if (strcasecmp(argv[4], "both") == 0)
-	{
-		state = 3;
-	}
-	else
-	{
-		state = (uint8_t)atoi(argv[4]);
-		// TODO: FIXME: bug: atoi returns 0 even if argv[4] is not a number
-		if (! (state <= 3))
-		{
-			printf("Invalid edge counting type [0..3]!\n");
-			return ARG_RANGE_ERROR;
-		}
-	}
+    state = (uint8_t)atoi(argv[4]);
+    // TODO: FIXME: bug: atoi returns 0 even if argv[4] is not a number
+    if (! (0 <= state && state <= 1))
+    {
+        printf("Invalid edge counting type [0/1]!\n");
+        return ARG_RANGE_ERROR;
+    }
 	if (OK != optoEdgeSet(dev, channel, state))
 	{
 		printf("Fail to write optocoupled ch edge counting \n");

@@ -1,12 +1,12 @@
-#ifndef BOARD_H
-#define BOARD_H
+#ifndef BUTTON_H
+#define BUTTON_H
 
 #include "cli.h"
 
-extern const CliCmdType CMD_BOARD;
-extern const CliCmdType CMD_LIST;
+extern const CliCmdType CMD_BUTTON_READ;
+extern const CliCmdType CMD_BUTTON_LATCH_READ;
 
-int doBoard(int argc, char *argv[]);
-int doList(int argc, char *argv[]);
+int doButtonLatch(int argc, char *argv[]);
+int doButton(int argc, char *argv[]);
 
-#endif /* BOARD_H_ */
+#endif /* BUTTON_H */

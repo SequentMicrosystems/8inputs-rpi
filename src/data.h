@@ -1,5 +1,5 @@
 #ifndef DATA_H_
-#define RELAY8_H_
+#define DATA_H_
 
 #include <stdint.h>
 
@@ -22,14 +22,24 @@
 
 #define RELAY8_HW_I2C_BASE_ADD	0x20
 
+#define MIN_CH_NO 1
 #define LED_CH_NO 8
 #define IN_CH_NO 8
-#define COUNT_SIZE 4
+#define OPTO_CH_NO 8
+#define COUNTER_SIZE 4 // COUNT_SIZE
 #define ENC_COUNT_SIZE 4
 #define ENC_NO 4
 #define SCAN_FREQ_SIZE 2
-#define PWM_IN_FILL_SIZE 2
-#define IN_FREQENCY_SIZE 2
+#define OPTO_FREQUENCY_DATA_SIZE 2
+#define OPTO_FILL_FACTOR_DATA_SIZE 2
+#define OPTO_FILL_FACTOR_SCALE 100
+
+#define CALIBRATION_KEY 0xaa
+#define RESET_CALIBRATION_KEY	0x55
+#define WDT_RESET_SIGNATURE     0xca
+#define WDT_RESET_COUNT_SIGNATURE    0xbe
+
+#define VOLT_TO_MILIVOLT 1000
 
 enum
 {
@@ -39,28 +49,27 @@ enum
 	I2C_POLINV_REG_ADD,
 	I2C_CFG_REG_ADD,
 	//---- end retrocompatibility -----
-	I2C_MEM_DIG_IN,
+	I2C_MEM_OPTO, // I2C_MEM_DIG_IN
 	I2C_MEM_AC_IN,
-	I2C_MEM_LED_VAL,
+	I2C_MEM_LEDS, // I2C_MEM_LED_VAL
 	I2C_MEM_LED_SET,
 	I2C_MEM_LED_CLR,
 	I2C_MEM_GP_LED_MODE, //0-auto, 1 - manual;
 	I2C_MEM_HS_MODE_VAL, //enable/disable high speed mode for each input
 	I2C_MEM_HS_ENABLE, // enable high speed mode for one channel
 	I2C_MEM_HS_DISABLE, // disable High speed mode for one channel
-	I2C_MEM_EDGE_ENABLE,
-	I2C_MEM_ENC_ENABLE,
+	I2C_MEM_OPTO_EDGE_ADD, // I2C_MEM_EDGE_ENABLE
+	I2C_MEM_OPTO_ENC_ENABLE_ADD, // I2C_MEM_ENC_ENABLE
 	I2C_MEM_SCAN_FREQ,
-	I2C_MEM_PULSE_COUNT_START = I2C_MEM_SCAN_FREQ + SCAN_FREQ_SIZE,
-	I2C_MEM_PPS = I2C_MEM_PULSE_COUNT_START + (IN_CH_NO * COUNT_SIZE),
-	I2C_MEM_ENC_COUNT_START = I2C_MEM_PPS + IN_CH_NO * IN_FREQENCY_SIZE,
-	I2C_MEM_PWM_IN_FILL = I2C_MEM_ENC_COUNT_START + (ENC_NO * ENC_COUNT_SIZE),
-	I2C_MEM_IN_FREQENCY = I2C_MEM_PWM_IN_FILL + (IN_CH_NO * PWM_IN_FILL_SIZE),
-	I2C_MEM_IN_FREQENCY_END = I2C_MEM_IN_FREQENCY + (IN_CH_NO * IN_FREQENCY_SIZE)
-		- 1,
-	I2C_MEM_PULSE_COUNT_RESET, //2 bytes to be one modbus register
-	I2C_MEM_ENC_COUNT_RESET = I2C_MEM_PULSE_COUNT_RESET + 2, //2 bytes to be one modbus register
-	I2C_MODBUS_SETINGS_ADD = I2C_MEM_ENC_COUNT_RESET + 2,
+	I2C_MEM_OPTO_EDGE_COUNT_ADD = I2C_MEM_SCAN_FREQ + SCAN_FREQ_SIZE, // I2C_MEM_PULSE_COUNT_START
+	I2C_MEM_PPS = I2C_MEM_OPTO_EDGE_COUNT_ADD + (IN_CH_NO * COUNTER_SIZE),
+	I2C_MEM_OPTO_ENC_COUNT_ADD = I2C_MEM_PPS + IN_CH_NO * OPTO_FREQUENCY_DATA_SIZE,
+	I2C_MEM_PWM_IN_FILL = I2C_MEM_OPTO_ENC_COUNT_ADD + (ENC_NO * ENC_COUNT_SIZE),
+	I2C_MEM_IN_FREQENCY = I2C_MEM_PWM_IN_FILL + (IN_CH_NO * OPTO_FILL_FACTOR_DATA_SIZE),
+	I2C_MEM_IN_FREQENCY_END = I2C_MEM_IN_FREQENCY + (IN_CH_NO * OPTO_FREQUENCY_DATA_SIZE) - 1,
+	I2C_MEM_OPTO_CNT_RST_ADD, //I2C_MEM_PULSE_COUNT_RESET: 2 bytes to be one modbus register
+	I2C_MEM_OPTO_ENC_CNT_RST_ADD = I2C_MEM_OPTO_CNT_RST_ADD + 2, //2 bytes to be one modbus register
+	I2C_MODBUS_SETINGS_ADD = I2C_MEM_OPTO_ENC_CNT_RST_ADD + 2,
 	I2C_NBS1,
 	I2C_MBS2,
 	I2C_MBS3,
@@ -92,30 +101,28 @@ enum
 typedef uint8_t u8;
 typedef uint16_t u16;
 
-typedef enum
-{
-	OFF = 0,
+#define ERROR -1
+#define OK 0
+#define ARG_CNT_ERR -2
+#define ARG_RANGE_ERROR -3
+#define IO_ERROR -4
+
+#define STR_(x) #x
+#define STR(x) STR_(x)
+#define MASK_1 1
+#define MASK_2 3
+#define MASK_3 7
+#define MASK_4 15
+#define MASK_5 31
+#define MASK_6 63
+#define MASK_7 127
+#define MASK_(x) MASK_##x
+#define MASK(x) MASK_(x)
+
+typedef enum {
+	OFF,
 	ON,
-	STATE_COUNT
-} OutStateEnumType;
+	STATE_COUNT,
+} State;
 
-#define ERROR	-1
-#define OK		0
-#define FAIL	-1
-#define ARG_ERR -2
-#define ARG_CNT_ERR -3
-
-typedef struct
-{
- const char* name;
- const int namePos;
- int(*pFunc)(int, char**);
- const char* help;
- const char* usage1;
- const char* usage2;
- const char* example;
-}CliCmdType;
-
-const CliCmdType *gCmdArray[];
-
-#endif //RELAY8_H_
+#endif /* DATA_H_ */

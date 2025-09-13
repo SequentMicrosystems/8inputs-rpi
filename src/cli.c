@@ -57,5 +57,5 @@ const CliCmdType *gCmdArray[] =
     &CMD_WDT_GET_RESET_COUNT,
     &CMD_WDT_CLR_RESET_COUNT,
     
-    NULL
+    0
 };

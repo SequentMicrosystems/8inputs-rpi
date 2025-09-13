@@ -1,48 +1,55 @@
-DESTDIR?=/usr
-PREFIX?=/local
+TARGET  = $(shell awk '/\#define PROGRAM_NAME/ {print $$3}' src/data.h | tr -d '"')
+
+DESTDIR ?= /usr/local
 
 ifneq ($V,1)
-Q ?= @
+Q = @
 endif
 
 CC	= gcc
-CFLAGS	= $(DEBUG) -Wall -Wextra $(INCLUDE) -Winline -pipe 
-
-LDFLAGS	= -L$(DESTDIR)$(PREFIX)/lib
+CFLAGS	= $(DEBUG) -Wall -Wextra $(INCLUDE) -Winline -pipe
+RELCFLAGS = -O3 -DNDEBUG
+DBGCFLAGS = -g -DDEBUG
+LDFLAGS	= -L$(DESTDIR)/lib
 LIBS    = -lpthread -lrt -lm -lcrypt
 
-SRC	=	src/inputs.c src/comm.c
+SRC	= $(shell find src -type f -name '*.c' | sort)
+#HDR	= $(shell find src -type f -name '*.h' | sort)
+OBJ	= $(patsubst src/%.c,build/%.o,$(SRC))
 
-OBJ	=	$(SRC:.c=.o)
+.PHONY:	all clean debug install uninstall
 
-all:	8inputs
+all:	CFLAGS += $(RELCFLAGS)
+all:	$(TARGET)
 
-8inputs:	$(OBJ)
-	$Q echo [Link]
+debug:	CFLAGS += $(DBGCFLAGS)
+debug:	$(TARGET)
+
+$(TARGET): $(OBJ)
+	$Q echo "[Link] build/*.o -> $(TARGET)"
 	$Q $(CC) -o $@ $(OBJ) $(LDFLAGS) $(LIBS)
 
-.c.o:
-	$Q echo [Compile] $<
+build/%.o : src/%.c
+	$Q mkdir -p $(@D)
+	$Q echo "[Compile] $< -> $@"
 	$Q $(CC) -c $(CFLAGS) $< -o $@
 
-.PHONY:	clean
 clean:
 	$Q echo "[Clean]"
-	$Q rm -f $(OBJ) 8inputs *~ core tags *.bak
+	$Q rm -f $(OBJ) $(TARGET) *~ core tags *.bak build/*
 
-.PHONY:	install
-install: 8inputs
-	$Q echo "[Install]"
-	$Q cp 8inputs		$(DESTDIR)$(PREFIX)/bin
-ifneq ($(WIRINGPI_SUID),0)
-	$Q chown root:root	$(DESTDIR)$(PREFIX)/bin/8inputs
-	$Q chmod 4755		$(DESTDIR)$(PREFIX)/bin/8inputs
+install: $(TARGET)
+ifneq ($(shell id -u),0)
+	$Q echo "Must be root! (sudo make install)"
+	$Q exit 1
 endif
-#	$Q mkdir -p		$(DESTDIR)$(PREFIX)/man/man1
-#	$Q cp megaio.1		$(DESTDIR)$(PREFIX)/man/man1
+	$Q echo "[Install] $(DESTDIR)/bin/$(TARGET)"
+	$Q install -D -m 4755 -o root $(TARGET) $(DESTDIR)/bin
 
-.PHONY:	uninstall
 uninstall:
-	$Q echo "[UnInstall]"
-	$Q rm -f $(DESTDIR)$(PREFIX)/bin/8inputs
-	$Q rm -f $(DESTDIR)$(PREFIX)/man/man1/8inputs.1
+ifneq ($(shell id -u),0)
+	$Q echo "Must be root! (sudo make uninstall)"
+	$Q exit 1
+endif
+	$Q echo "[Uninstall]"
+	$Q rm -f $(DESTDIR)/bin/$(TARGET)

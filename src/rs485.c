@@ -68,7 +68,7 @@ const CliCmdType CMD_CFG485_WRITE =
 	"cfg485wr",
 	2,
 	&doCfg485Write,
-	"  cfg485wr            Set the RS485 port parameters\n",
+	"  cfg485wr         Set the RS485 port parameters\n",
 	"  Usage:           "PROGRAM_NAME" <id> cfg485wr <modbus (0/1)> <modbus ID [1..254]> <baudrate> <stop bits(1/2)> <parity(0/1/2)>\n",
 	"  Example:         "PROGRAM_NAME" 0 cfg485wr 1 1 9600 1 0  Set modbus RTU, ID = 1, baudrate 9600bps, one stop bit, parity none  \n"
 };
