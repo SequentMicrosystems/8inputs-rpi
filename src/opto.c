@@ -419,7 +419,7 @@ int doOptoEdgeWrite(int argc, char *argv[])
 	uint8_t state = 0;
     state = (uint8_t)atoi(argv[4]);
     // TODO: FIXME: bug: atoi returns 0 even if argv[4] is not a number
-    if (! (0 <= state && state <= 1))
+    if (state > 1)
     {
         printf("Invalid edge counting type [0/1]!\n");
         return ARG_RANGE_ERROR;

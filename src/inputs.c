@@ -30,9 +30,7 @@
 #define RELAY8_HW_I2C_BASE_ADD 0x20
 #define RELAY8_OUTPORT_REG_ADD 0x01
 
-#define I2C_MEM_HS_ENABLE 0x10
-#define I2C_MEM_HS_DISABLE 0x11
-#define I2C_MEM_HS_MODE_VAL 0x12
+
 
 const u8 inMaskRemap[IN_CH_NR_MAX] =
 {
@@ -275,7 +273,7 @@ int doHiSpeedSet(int argc, char *argv[])
     // Set the speed for the specified channel
     if(speed == 1)
     {
-
+        
         if(OK != i2cMem8Write(dev, I2C_MEM_HS_ENABLE, buff, 1)) // High speed enable
         {
             printf("Fail to set high speed!\n");
@@ -284,6 +282,7 @@ int doHiSpeedSet(int argc, char *argv[])
     }
     else
     {
+    
         if(OK != i2cMem8Write(dev, I2C_MEM_HS_DISABLE, buff, 1)) // High speed disable
         {
             printf("Fail to set low speed!\n");
@@ -319,12 +318,13 @@ int doHiSpeedGet(int argc, char *argv[])
         return ARG_RANGE_ERROR;
     }
 
-    // Get the speed for the specified channel
+    // Get the speed for the specified channel i2cMem8Read
     if(OK != i2cMem8Read(dev, I2C_MEM_HS_MODE_VAL, buff, 1)) // High speed enable
     {
         printf("Fail to get speed!\n");
         return ERROR;
     }
+   
     if(buff[0] & (1 << (channel - 1)))
     {
         printf("1\n"); // High speed

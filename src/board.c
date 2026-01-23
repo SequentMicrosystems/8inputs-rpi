@@ -24,27 +24,39 @@ int doBoard(int argc, char *argv[]) {
         if(dev <= 0) {
                 return ERROR;
         }
-        uint8_t buf[3];
-		/*
-        if(OK != i2cMem8Read(dev, I2C_MEM_DIAG_TEMPERATURE_ADD, buf, 3)) {
+        uint8_t buf[16];
+		
+       
+        if(ERROR == i2cMem8Read(dev, I2C_MEM_REVISION_HW_MAJOR_ADD, buf, 4)) {
                 printf("Fail to read board info!\n");
                 return ERROR;
         }
-        uint8_t temperature = buf[0];
-		*/
-        int16_t resp;
-        memcpy(&resp, &buf[1], 2);
-        float vIn = (float)resp / VOLT_TO_MILIVOLT;
-        if(ERROR == i2cMem8Read(dev, I2C_MEM_REVISION_MAJOR_ADD, buf, 2)) {
-                printf("Fail to read board info!\n");
-                return ERROR;
+        int fwMin =buf[3];
+        int fwMaj = buf[2]; 	
+        if(buf[0] >= 5)
+        {
+                if(OK != i2cMem8Read(dev, I2C_MEM_DIAG_3V3_MV_ADD, buf, 7)) {
+                        printf("Fail to read board info!\n");
+                        return ERROR;
+                }
+                uint8_t temperature = buf[6];
+                        
+                int16_t resp;
+                memcpy(&resp, &buf[0], 2);
+                float vcpu = (float)resp / VOLT_TO_MILIVOLT;
+                memcpy(&resp, &buf[2], 2);
+                float vRasp = (float)resp / VOLT_TO_MILIVOLT;
+                memcpy(&resp, &buf[4], 2);
+                float vIn = (float)resp / VOLT_TO_MILIVOLT;
+                printf("Firmware version %d.%d, CPU %0.2f V, CPU temperature %d C, vin %0.2f V, v Raspberry %0.2f V\n",
+                fwMaj, fwMin, vcpu, temperature, vIn, vRasp);
         }
-		/*
-        printf("Firmware version %d.%d, CPU temperature %d C, Power source %0.2f V\n",
-                (int)buf[0], (int)buf[1], temperature, vIn);
-		*/
-        printf("Firmware version %d.%d, Power source %0.2f V\n",
-                (int)buf[0], (int)buf[1], vIn);
+        else
+        {
+                printf("Firmware version %d.%d\n",
+                fwMaj, fwMin);
+        }
+
         return OK;
 }
 
