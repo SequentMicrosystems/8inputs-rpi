@@ -5,7 +5,7 @@
 
 #define CARD_NAME "8Inputs"
 #define PROGRAM_NAME "8inputs"
-#define VERSION "1.1.0"
+#define VERSION "1.1.1"
 
 #define RETRY_TIMES	10
 #define RELAY8_INPORT_REG_ADD	0x00

@@ -31,6 +31,7 @@ const CliCmdType *gCmdArray[] =
     
     // Opto commands
     &CMD_OPTO_READ,
+    &CMD_OPTO_AC_READ,
     &CMD_OPTO_EDGE_WRITE,
     &CMD_OPTO_EDGE_READ,
     &CMD_OPTO_CNT_READ,

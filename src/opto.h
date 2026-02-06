@@ -4,6 +4,7 @@
 #include "cli.h"
 
 extern const CliCmdType CMD_OPTO_READ;
+extern const CliCmdType CMD_OPTO_AC_READ;
 extern const CliCmdType CMD_OPTO_EDGE_WRITE;
 extern const CliCmdType CMD_OPTO_EDGE_READ;
 extern const CliCmdType CMD_OPTO_CNT_READ;
@@ -16,6 +17,7 @@ extern const CliCmdType CMD_OPTO_FREQUENCY_READ;
 extern const CliCmdType CMD_OPTO_PWM_READ;
 
 int doOptoRead(int argc, char *argv[]);
+int doOptoAcRead(int argc, char *argv[]);
 int doOptoEdgeWrite(int argc, char *argv[]);
 int doOptoEdgeRead(int argc, char *argv[]);
 int doOptoCntRead(int argc, char *argv[]);

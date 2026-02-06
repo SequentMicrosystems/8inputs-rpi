@@ -74,6 +74,48 @@ int optoGet(int dev, int *val)
 	return OK ;
 }
 
+int optoChACGet(int dev, uint8_t ch, State *state)
+{
+	if (NULL == state)
+	{
+		return ERROR ;
+	}
+	if (badOptoCh(ch))
+	{
+		printf("Invalid opto ch nr!\n");
+		return ERROR ;
+	}
+	uint8_t buf[1];
+	if (OK != i2cMem8Read(dev, I2C_MEM_AC_IN, buf, 1))
+	{
+		return ERROR ;
+	}
+	if (buf[0] & (1 << (ch - 1)))
+	{
+		*state = ON;
+	}
+	else
+	{
+		*state = OFF;
+	}
+	return OK ;
+}
+
+
+int optoACGet(int dev, int* val)
+{
+	uint8_t buff[1];
+	if (NULL == val)
+	{
+		return ERROR ;
+	}
+	if (OK != i2cMem8Read(dev, I2C_MEM_AC_IN, buff, 1))
+	{
+		return ERROR ;
+	}
+	*val = buff[0];
+	return OK ;
+}
 /*
 Modified to only care about enabled or not,
 not the rising/falling edge
@@ -354,6 +396,64 @@ int doOptoRead(int argc, char *argv[])
 	}
 	return OK ;
 }
+
+
+const CliCmdType CMD_OPTO_AC_READ =
+{
+	"optacrd",
+	2,
+	&doOptoAcRead,
+	"  optacrd            Read optocoupled inputs status\n",
+	"  Usage:           "PROGRAM_NAME" <id> optacrd <channel>\n"
+	"  Usage:           "PROGRAM_NAME" <id> optacrd\n",
+	"  Example:         "PROGRAM_NAME" 0 optacrd 2; Read Status of Optocoupled input ch #2 on Board #0\n"
+};
+int doOptoAcRead(int argc, char *argv[])
+{
+	int dev = doBoardInit(atoi(argv[1]));
+	if (dev < 0)
+	{
+		return ERROR ;
+	}
+	if (argc == 4)
+	{
+		int channel = atoi(argv[3]);
+		if (badOptoCh(channel))
+		{
+			return ARG_RANGE_ERROR;
+		}
+		State state = STATE_COUNT;
+		if (OK != optoChACGet(dev, channel, &state))
+		{
+			printf("Fail to read!\n");
+			return ERROR ;
+		}
+		if (state != OFF)
+		{
+			printf("1\n");
+		}
+		else
+		{
+			printf("0\n");
+		}
+	}
+	else if (argc == 3)
+	{
+		int val;
+		if (OK != optoACGet(dev, &val))
+		{
+			printf("Fail to read!\n");
+			return ERROR ;
+		}
+		printf("%d\n", val);
+	}
+	else
+	{
+		return ARG_CNT_ERR;
+	}
+	return OK ;
+}
+
 
 const CliCmdType CMD_OPTO_EDGE_READ =
 {
