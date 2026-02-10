@@ -16,6 +16,7 @@
 #include <sys/ioctl.h>
 #include <linux/i2c-dev.h>
 #include "comm.h"
+#include "data.h"
 
 #define I2C_SLAVE	0x0703
 #define I2C_SMBUS	0x0720	/* SMBus-level access */
@@ -116,4 +117,43 @@ int i2cMem8Write(int dev, int add, uint8_t* buff, int size)
 }
 
 
+int doBoardInit(int stack)
+{
+    int dev = 0;
+    int add = 0;
+    uint8_t buff[8];
 
+    if ( (stack < 0) || (stack > 7))
+    {
+        printf("Invalid stack level [0..7]!");
+        return ARG_RANGE_ERROR;
+    }
+    add = (stack + RELAY8_HW_I2C_BASE_ADD) ^ 0x07;
+    dev = i2cSetup(add);
+    if (dev == -1)
+    {
+        return ERROR;
+    }
+    if (ERROR == i2cMem8Read(dev, RELAY8_CFG_REG_ADD, buff, 1))
+    {
+        printf("4-RELAY_PLUS card id %d not detected\n", stack);
+        return ERROR;
+    }
+//	if (buff[0] != 0x0f) //non initialized I/O Expander
+//	{
+//		// make 4 I/O pins input and 4 output
+//		buff[0] = 0x0f;
+//		if (0 > i2cMem8Write(dev, RELAY8_CFG_REG_ADD, buff, 1))
+//		{
+//			return ERROR;
+//		}
+//		// put all pins in 0-logic state
+//		buff[0] = 0;
+//		if (0 > i2cMem8Write(dev, RELAY8_OUTPORT_REG_ADD, buff, 1))
+//		{
+//			return ERROR;
+//		}
+//	}
+
+    return dev;
+}
