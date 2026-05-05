@@ -6,7 +6,7 @@
     "i2c-bus": "^5.2.0"
   },
   "deprecated": false,
-  "description": "A Node-RED node to control Sequent Microsystems 4Relays-4Inputs Card",
+  "description": "A Node-RED node to control Sequent Microsystems 8Inputs Card",
   "main": "8inputs.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
