@@ -13,8 +13,11 @@ Set Modbus RTU, slave address offset = 1, baud rate 9600bps, one stop bit, parit
 ```
 Displays the full set of options
 
+### Default:
+ 38400 8N1 Modbus RTU Enabled.
+ 
 ## Slave Address
-The slave address is added with the "stack level" DIP switches. For example, the DIP switch configuration for stack level 1 (one switch in position ID0 is ON) with a slave address offset of 1 corresponds to slave address 2.
+The slave address is set with the "stack level" DIP switches. For example, the DIP switch configuration for stack level 1 (one switch in position ID0 is ON) with a slave address offset of 1 corresponds to slave address 2.
 
 ## Modbus object types
 All Modbus RTU object types with standard addresses are implemented: Coils, Discrete Inputs, Input registers, and Holding registers.
@@ -129,12 +132,12 @@ Access level Read Only, Size 16 bits
 
 ### Holding registers
 
-Access level Read/Write, Size 16 bits
+Access level: Read/Write, Size 16 bits
 
 | Device function | Register Address | Modbus Address | Range | Description |
 | --- | --- | --- | --- | --- |
-| HR_RESET_COUNT_CHANNEL | 40009 | 0x08 | Reset input count channel |1..8| Write 1..8 to reset respective channel |
-| HR_RESET_ENCODER_CHANNEL | 40010 | 0x09 | Reset encoder channel |1..4| Write 1..4 to reset respective encoder channel |
+| HR_RESET_COUNT_CHANNEL | 40009 | 0x08 | Reset input count channel | Write 1..8 to reset respective channel |1..8|
+| HR_RESET_ENCODER_CHANNEL | 40010 | 0x09 | Reset encoder channel | Write 1..4 to reset respective encoder channel |1..4|
 
 
 
