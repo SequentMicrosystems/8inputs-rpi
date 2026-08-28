@@ -25,50 +25,60 @@ Access level: Read/Write, Size: 1 bit
 
 | Device function | Register Address | Modbus Address |
 | --- | --- | --- |
-| COIL_LED1_MODE| 001 | 0x00|
-|	COIL_LED2_MODE
-	COIL_LED3_MODE,
-	COIL_LED4_MODE,
-	COIL_LED5_MODE,
-	COIL_LED6_MODE,
-	COIL_LED7_MODE,
-	COIL_LED8_MODE,
-	COIL_LED1,
-	COIL_LED2,
-	COIL_LED3,
-	COIL_LED4,
-	COIL_LED5,
-	COIL_LED6,
-	COIL_LED7,
-	COIL_LED8,
-	COIL_IN1_COUNT_ENABLE,
-	COIL_IN2_COUNT_ENABLE,
-	COIL_IN3_COUNT_ENABLE,
-	COIL_IN4_COUNT_ENABLE,
-	COIL_IN5_COUNT_ENABLE,
-	COIL_IN6_COUNT_ENABLE,
-	COIL_IN7_COUNT_ENABLE,
-	COIL_IN8_COUNT_ENABLE,
-	COIL_ENCODER1_ENABLE,
-	COIL_ENCODER2_ENABLE,
-	COIL_ENCODER3_ENABLE,
-	COIL_ENCODER4_ENABLE,
-| COIL_LED1 | 0001 | 0x00 |
-| COIL_LED2 | 0002 | 0x01 |
-| COIL_LED3 | 0003 | 0x02 |
-| COIL_LED4 | 0004 | 0x03 |
-| COIL_LED5 | 0005 | 0x04 |
-| COIL_LED6 | 0006 | 0x05 |
-| COIL_LED7 | 0007 | 0x06 |
-| COIL_LED8 | 0008 | 0x07 |
+|   COIL_LED1_MODE | 001 | 0x00 |
+|   COIL_LED2_MODE | 002 | 0x01 |
+|	COIL_LED3_MODE | 003 | 0x02 |
+|	COIL_LED4_MODE | 004 | 0x03 |
+|	COIL_LED5_MODE | 005 | 0x04 |
+|	COIL_LED6_MODE | 006 | 0x05 |
+|	COIL_LED7_MODE | 007 | 0x06 |
+|	COIL_LED8_MODE | 008 | 0x07 |
+|	COIL_LED1_MODE | 001 | 0x00 |
+|	COIL_LED2_MODE | 002 | 0x01 |
+|	COIL_LED3_MODE | 003 | 0x02 |
+|	COIL_LED4_MODE | 004 | 0x03 |
+|	COIL_LED5_MODE | 005 | 0x04 |
+|	COIL_LED6_MODE | 006 | 0x05 |
+|	COIL_LED7_MODE | 007 | 0x06 |
+|	COIL_LED8_MODE | 008 | 0x07 |
+|	COIL_IN1_COUNT_ENABLE | 009 | 0x08 |
+|	COIL_IN2_COUNT_ENABLE | 010 | 0x09 |
+|	COIL_IN3_COUNT_ENABLE | 011 | 0x0a |
+|	COIL_IN4_COUNT_ENABLE | 012 | 0x0b |
+|	COIL_IN5_COUNT_ENABLE | 013 | 0x0c |
+|	COIL_IN6_COUNT_ENABLE | 014 | 0x0d |
+|	COIL_IN7_COUNT_ENABLE | 015 | 0x0e |
+|	COIL_IN8_COUNT_ENABLE | 016 | 0x0f |
+|	COIL_ENCODER1_ENABLE | 017 | 0x10 |
+|	COIL_ENCODER2_ENABLE | 018 | 0x11 |
+|	COIL_ENCODER3_ENABLE | 019 | 0x12 |
+|	COIL_ENCODER4_ENABLE | 020 | 0x13 |
+
 
 
 ### Discrete Inputs
 
 Access level Read Only, Size 1 bit
 
-| Device function | Register Address | Modbus Address |
-| --- | --- | --- |
+| Device function | Register Address | Modbus Address | Description | Measurement Unit |
+| --- | --- | --- | --- | --- |
+| DI_IN1 | 10001 | 0x00 | Digital input 1 | |
+| DI_IN2 | 10002 | 0x01 | Digital input 2 | |
+| DI_IN3 | 10003 | 0x02 | Digital input 3 | |
+| DI_IN4 | 10004 | 0x03 | Digital input 4 | |
+| DI_IN5 | 10005 | 0x04 | Digital input 5 | |
+| DI_IN6 | 10006 | 0x05 | Digital input 6 | |
+| DI_IN7 | 10007 | 0x06 | Digital input 7 | |
+| DI_IN8 | 10008 | 0x07 | Digital input 8 | |
+| DI_AC_IN1 | 10009 | 0x08 | AC filtered input 1 | |
+| DI_AC_IN2 | 10010 | 0x09 | AC filtered input 2 | |
+| DI_AC_IN3 | 10011 | 0x0a | AC filtered input 3 | |
+| DI_AC_IN4 | 10012 | 0x0b | AC filtered input 4 | |
+| DI_AC_IN5 | 10013 | 0x0c | AC filtered input 5 | |
+| DI_AC_IN6 | 10014 | 0x0d | AC filtered input 6 | |
+| DI_AC_IN7 | 10015 | 0x0e | AC filtered input 7 | |
+| DI_AC_IN8 | 10016 | 0x0f | AC filtered input 8 | |
+| DI_BUTTON | 10017 | 0x10 | User button | |
 | | | |
 
 
@@ -78,22 +88,43 @@ Access level Read Only, Size 16 bits
 
 | Device function | Register Address | Modbus Address| Description | Measurement Unit |
 | --- | --- | --- | --- | --- |
-| IR_VIN_H1| 30001 | 0x00 | In voltage, High 16 bits of IEEE 754 number | V |
-| IR_VIN_L1| 30002 | 0x01 | In voltage, Low 16 bits of IEEE 754 number | V |
-| IR_VIN_H2| 30003 | 0x02 | In voltage, High 16 bits of IEEE 754 number | V |
-| IR_VIN_L2| 30004 | 0x03 | In voltage, Low 16 bits of IEEE 754 number | V |
-| IR_VIN_H3| 30005 | 0x04 | In voltage, High 16 bits of IEEE 754 number | V |
-| IR_VIN_L3| 30006 | 0x05 | In voltage, Low 16 bits of IEEE 754 number | V |
-| IR_VIN_H4| 30007 | 0x06 | In voltage, High 16 bits of IEEE 754 number | V |
-| IR_VIN_L4| 30008 | 0x07 | In voltage, Low 16 bits of IEEE 754 number | V |
-| IR_VIN_H5| 30009 | 0x0a | In voltage, High 16 bits of IEEE 754 number | V |
-| IR_VIN_L5| 30010 | 0x0b | In voltage, Low 16 bits of IEEE 754 number | V |
-| IR_VIN_H6| 30011 | 0x0c | In voltage, High 16 bits of IEEE 754 number | V |
-| IR_VIN_L6| 30012 | 0x0d | In voltage, Low 16 bits of IEEE 754 number | V |
-| IR_VIN_H7| 30013 | 0x0e | In voltage, High 16 bits of IEEE 754 number | V |
-| IR_VIN_L7| 30014 | 0x0f | In voltage, Low 16 bits of IEEE 754 number | V |
-| IR_VIN_H8| 30015 | 0x10 | In voltage, High 16 bits of IEEE 754 number | V |
-| IR_VIN_L8| 30016 | 0x11 | In voltage, Low 16 bits of IEEE 754 number | V |
+| IR_COUNT1_L| 30001 | 0x00 | Input count 1, Low 16 bits | |
+| IR_COUNT1_H| 30002 | 0x01 | Input count 1, High 16 bits | |
+| IR_COUNT2_L| 30003 | 0x02 | Input count 2, Low 16 bits | |
+| IR_COUNT2_H| 30004 | 0x03 | Input count 2, High 16 bits | |
+| IR_COUNT3_L| 30005 | 0x04 | Input count 3, Low 16 bits | |
+| IR_COUNT3_H| 30006 | 0x05 | Input count 3, High 16 bits | |
+| IR_COUNT4_L| 30007 | 0x06 | Input count 4, Low 16 bits | |
+| IR_COUNT4_H| 30008 | 0x07 | Input count 4, High 16 bits | |
+| IR_COUNT5_L| 30009 | 0x08 | Input count 5, Low 16 bits | |
+| IR_COUNT5_H| 30010 | 0x09 | Input count 5, High 16 bits | |
+| IR_COUNT6_L| 30011 | 0x0a | Input count 6, Low 16 bits | |
+| IR_COUNT6_H| 30012 | 0x0b | Input count 6, High 16 bits | |
+| IR_COUNT7_L| 30013 | 0x0c | Input count 7, Low 16 bits | |
+| IR_COUNT7_H| 30014 | 0x0d | Input count 7, High 16 bits | |
+| IR_COUNT8_L| 30015 | 0x0e | Input count 8, Low 16 bits | |
+| IR_COUNT8_H| 30016 | 0x0f | Input count 8, High 16 bits | |
+| IR_PPS1| 30017 | 0x10 | Pulses per second 1 | |
+| IR_PPS2| 30018 | 0x11 | Pulses per second 2 | |
+| IR_PPS3| 30019 | 0x12 | Pulses per second 3 | |
+| IR_PPS4| 30020 | 0x13 | Pulses per second 4 | |
+| IR_PPS5| 30021 | 0x14 | Pulses per second 5 | |
+| IR_PPS6| 30022 | 0x15 | Pulses per second 6 | |
+| IR_PPS7| 30023 | 0x16 | Pulses per second 7 | |
+| IR_PPS8| 30024 | 0x17 | Pulses per second 8 | |
+| IR_ENC_VAL1_L| 30025 | 0x18 | Encoder value 1, Low 16 bits | |
+| IR_ENC_VAL1_H| 30026 | 0x19 | Encoder value 1, High 16 bits | |
+| IR_ENC_VAL2_L| 30027 | 0x1a | Encoder value 2, Low 16 bits | |
+| IR_ENC_VAL2_H| 30028 | 0x1b | Encoder value 2, High 16 bits | |
+| IR_PWM1_FILL| 30029 | 0x1c | PWM 1 fill | % |
+| IR_PWM2_FILL| 30030 | 0x1d | PWM 2 fill | % |
+| IR_PWM3_FILL| 30031 | 0x1e | PWM 3 fill | % |
+| IR_PWM4_FILL| 30032 | 0x1f | PWM 4 fill | % |
+| IR_PWM1_FREQ| 30033 | 0x20 | PWM 1 frequency |Hz|
+| IR_PWM2_FREQ| 30034 | 0x21 | PWM 2 frequency |Hz|
+| IR_PWM3_FREQ| 30035 | 0x22 | PWM 3 frequency |Hz|
+| IR_PWM4_FREQ| 30036 | 0x23 | PWM 4 frequency |Hz|
+	
 
 
 ### Holding registers
@@ -102,26 +133,9 @@ Access level Read/Write, Size 16 bits
 
 | Device function | Register Address | Modbus Address | Range | Description |
 | --- | --- | --- | --- | --- |
-| HR_GAIN_1 | 40001 | 0x00 | 0..7 | Gain Settings for CH1 |
-| HR_GAIN_2 | 40002 | 0x01 | 0..7 | Gain Settings for CH2 |
-| HR_GAIN_3 | 40003 | 0x02 | 0..7 | Gain Settings for CH3 |
-| HR_GAIN_4 | 40004 | 0x03 | 0..7 | Gain Settings for CH4 |
-| HR_GAIN_5 | 40005 | 0x04 | 0..7 | Gain Settings for CH5 |
-| HR_GAIN_6 | 40006 | 0x05 | 0..7 | Gain Settings for CH6 |
-| HR_GAIN_7 | 40007 | 0x06 | 0..7 | Gain Settings for CH7 |
-| HR_GAIN_8 | 40008 | 0x07 | 0..7 | Gain Settings for CH8 |
+| HR_RESET_COUNT_CHANNEL | 40009 | 0x08 | Reset input count channel |1..8| Write 1..8 to reset respective channel |
+| HR_RESET_ENCODER_CHANNEL | 40010 | 0x09 | Reset encoder channel |1..4| Write 1..4 to reset respective encoder channel |
 
-Gain settings:
-|Code | Full scale |
-| --- | --- |
-| 0 | ±24 V|
-| 1 | ±12 V|
-| 2 | ±6 V|
-| 3 | ±3 V|
-| 4 | ±1.5 V|
-| 5 | ±750 mV|
-| 6 | ±370 mV|
-| 7 | ±180 mV|
 
 
 
