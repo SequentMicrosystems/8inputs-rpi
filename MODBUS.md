@@ -136,8 +136,8 @@ Access level: Read/Write, Size 16 bits
 
 | Device function | Register Address | Modbus Address | Range | Description |
 | --- | --- | --- | --- | --- |
-| HR_RESET_COUNT_CHANNEL | 40009 | 0x08 | Reset input count channel | Write 1..8 to reset respective channel |1..8|
-| HR_RESET_ENCODER_CHANNEL | 40010 | 0x09 | Reset encoder channel | Write 1..4 to reset respective encoder channel |1..4|
+| HR_RESET_COUNT_CHANNEL | 40009 | 0x08  | 1..8 | Write 1..8 to reset respective channel|
+| HR_RESET_ENCODER_CHANNEL | 40010 | 0x09 | 1..4 | Write 1..4 to reset respective encoder channel |
 
 
 
